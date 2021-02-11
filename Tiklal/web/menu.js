@@ -3,7 +3,7 @@ function buildMainMenu() {
     var list = $("<ul class='menuList'>")
     menuDiv.append(list)
     var titles = getMajorTitles()
-    for(i = 0; i < titles.length; i++) {
+    for(var i = 0; i < titles.length; i++) {
         var item = $("<li>")
         list.append(item)
         var majorElem = $("<span class='menuItem'>").text(titles[i])
@@ -13,6 +13,7 @@ function buildMainMenu() {
     currentMajor = 0
     currentMinor = 0
     updateTitle('סידור תפילה בנוסח הקדום והזך של', 'קהילות קודש תימן יע"א – בלדי')
+    searchDiv.hide()
     settingsDiv.hide()
     containerDiv.hide()
     menuDiv.show()
@@ -25,7 +26,7 @@ function buildMinorMenu(major) {
     var list = $("<ul class='menuList'>")
     menuDiv.append(list)
     var titles = getMinorTitles(major)
-    for(i = 0; i < titles.length; i++) {
+    for(var i = 0; i < titles.length; i++) {
         var item = $("<li>")
         list.append(item)
         var minorElem = $("<span class='menuItem'>").text(titles[i])
@@ -33,13 +34,14 @@ function buildMinorMenu(major) {
         item.append(minorElem)
     }
 
+    searchDiv.hide()
     settingsDiv.hide()
     containerDiv.hide()
     menuDiv.show()
 }
 
 
-function showContent(major, minor) {
+function showContent(major, minor, dataPositionsToHighlight = []) {
     currentMajor = major
     currentMinor = minor
     containerDiv.empty()
@@ -48,7 +50,7 @@ function showContent(major, minor) {
         var section = createSection(prev[0], prev[1])
         containerDiv.append(section)
     }
-    var section = createSection(major, minor)
+    var section = createSection(major, minor, dataPositionsToHighlight)
     containerDiv.append(section)
     var next = getNext(major, minor) 
     if (next[0] != -1) {
@@ -56,10 +58,14 @@ function showContent(major, minor) {
         containerDiv.append(section)
     }
     
+    searchDiv.hide()
     settingsDiv.hide()    
     menuDiv.hide()
     containerDiv.show()
-    scrollToCurrent()
+    if (dataPositionsToHighlight.length > 0)
+        scrollToCurrent(dataPositionsToHighlight[0])
+    else
+        scrollToCurrent()
     updateTitleWithCurrent()
 }
 

@@ -1,5 +1,6 @@
 var currentMajor = null
 var currentMinor = null
+const NUMBER_OF_MAJORS = 9
 
 var elementCreators = {
     "P0": function (children, index) {
@@ -43,6 +44,22 @@ var elementCreators = {
         });
         var eltAfter = window.document.createElement('div');
         eltAfter.classList.add("P2after");
+        eltAfter.setAttribute('data-pos', index);
+        var eltMain = window.document.createElement('div');
+        eltMain.appendChild(elt);
+        eltMain.appendChild(eltAfter);
+        eltMain.setAttribute('data-pos', index);
+        return eltMain;
+    },
+    "P3": function (children, index) {
+        var elt = window.document.createElement('div');
+        elt.classList.add("P3");
+        elt.setAttribute('data-pos', index);
+        children.forEach(function (e) {
+            elt.appendChild(e);
+        });
+        var eltAfter = window.document.createElement('div');
+        eltAfter.classList.add("P3after");
         eltAfter.setAttribute('data-pos', index);
         var eltMain = window.document.createElement('div');
         eltMain.appendChild(elt);
@@ -220,16 +237,16 @@ function getNext(major, minor) {
     var numberOfMinors = getNumberOfMinors(major)
     if (minor < numberOfMinors - 1) 
         return [major, minor + 1]
-    else if (major == 8)
+    else if (major == NUMBER_OF_MAJORS - 1)
         return [-1, -1]
     else
         return [major + 1, 0]
 }
 
 function getContent(major, minor) {
-    if (major > 8)
+    if (major > NUMBER_OF_MAJORS - 1)
         return {
-            "error": "Index of major is out of bounds. There are only 9 majors"
+            "error": "Index of major is out of bounds."
         }
     var majorObject = sidur.content[major]
     var majorTitle = Object.keys(majorObject)[0]
@@ -249,12 +266,15 @@ function getContent(major, minor) {
     }
 }
 
-function createSection(major, minor) {
+function createSection(major, minor, dataPositionsToHighlight = []) {
     var div = $("<div id='content-" + major + "-" + minor + "' major='" + major + "' minor='" + minor + "'>")
     var content = getContent(major, minor).data
     for (var i = 0; i < content.length; i++) {
         var elem = getElement(content[i], i)
         div.append(elem)
+        if (dataPositionsToHighlight.includes(i)) {
+            elem.setAttribute("style", "background-color: #F5EAA9")
+        }
     }
     return div
 }
