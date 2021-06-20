@@ -13,11 +13,7 @@ function buildMainMenu() {
     currentMajor = 0
     currentMinor = 0
     updateTitle('סידור תפילה בנוסח הקדום והזך של', 'קהילות קודש תימן יע"א – בלדי')
-    searchDiv.hide()
-    settingsDiv.hide()
-    containerDiv.hide()
-    menuDiv.show()
-                    
+    showScreen("menu")                    
 } 
 
 function buildMinorMenu(major) {
@@ -34,10 +30,7 @@ function buildMinorMenu(major) {
         item.append(minorElem)
     }
 
-    searchDiv.hide()
-    settingsDiv.hide()
-    containerDiv.hide()
-    menuDiv.show()
+    showScreen("menu")
 }
 
 
@@ -58,10 +51,7 @@ function showContent(major, minor, dataPositionsToHighlight = []) {
         containerDiv.append(section)
     }
     
-    searchDiv.hide()
-    settingsDiv.hide()    
-    menuDiv.hide()
-    containerDiv.show()
+    showScreen("container")
     if (dataPositionsToHighlight.length > 0)
         scrollToCurrent(dataPositionsToHighlight[0])
     else
@@ -69,3 +59,18 @@ function showContent(major, minor, dataPositionsToHighlight = []) {
     updateTitleWithCurrent()
 }
 
+function showScreen(screen) {
+    searchDiv.hide()
+    settingsDiv.hide()    
+    menuDiv.hide()
+    containerDiv.hide()
+    if(screen == "container")
+        containerDiv.show()
+    if(screen == "menu")
+        menuDiv.show()
+    if(screen == "settings")
+        settingsDiv.show()
+    if(screen == "search")
+        searchDiv.show()
+    
+}

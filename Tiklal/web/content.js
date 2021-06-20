@@ -217,7 +217,7 @@ function getElement(je, index) {
 }
 
 function getNumberOfMinors(major) {
-    var majorObject = sidur.content[major]
+    var majorObject = content.content[major]
     var majorTitle = Object.keys(majorObject)[0]
     return majorObject[majorTitle].length
 }
@@ -248,7 +248,7 @@ function getContent(major, minor) {
         return {
             "error": "Index of major is out of bounds."
         }
-    var majorObject = sidur.content[major]
+    var majorObject = content.content[major]
     var majorTitle = Object.keys(majorObject)[0]
     var minorObject = majorObject[majorTitle][minor]
     if (!minorObject)
@@ -273,7 +273,10 @@ function createSection(major, minor, dataPositionsToHighlight = []) {
         var elem = getElement(content[i], i)
         div.append(elem)
         if (dataPositionsToHighlight.includes(i)) {
-            elem.setAttribute("style", "background-color: #F5EAA9")
+            if(darkMode)
+                elem.setAttribute("style", "background-color: #C5C6C8")
+            else
+                elem.setAttribute("style", "background-color: #F5EAA9")
         }
     }
     return div
@@ -281,7 +284,7 @@ function createSection(major, minor, dataPositionsToHighlight = []) {
 
 function getMajorTitles() {
     var ret = []
-    for (major of sidur.content) {
+    for (major of content.content) {
         ret.push(Object.keys(major)[0])
     }
     return ret
@@ -289,7 +292,7 @@ function getMajorTitles() {
 
 function getMinorTitles(major) {
     var ret = []
-    var majorObject = sidur.content[major]
+    var majorObject = content.content[major]
     var majorTitle = Object.keys(majorObject)[0]
     var minors = majorObject[majorTitle]
     for (minor of minors) {
