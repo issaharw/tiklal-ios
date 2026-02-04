@@ -59,6 +59,22 @@ function setFontSize(element, value) {
     window.open("settings://tiklal?fontSize=" + fontSize , '_blank');
 }
 
+var showLastPositionUI = true
+
+// Initialize showLastPositionUI from URL parameter
+if (window.location.search.indexOf('showLastPositionUI=false') >= 0) {
+    showLastPositionUI = false
+}
+
+// Apply showLastPositionUI visibility on page load
+$(document).ready(function() {
+    if (!showLastPositionUI) {
+        // Hide popup items related to last position
+        $('#popupGoToLast').hide();
+        $('#popupSavePosition').hide();
+    }
+});
+
 function showSettingsScreen() {
     if (darkMode) {
         $("#darkModeToggle").text('מופעל')
