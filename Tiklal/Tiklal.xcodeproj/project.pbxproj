@@ -14,6 +14,7 @@
 		36AB16FD25B39C15008FB11F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36AB16FB25B39C15008FB11F /* Main.storyboard */; };
 		36AB16FF25B39C16008FB11F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 36AB16FE25B39C16008FB11F /* Assets.xcassets */; };
 		36AB170225B39C16008FB11F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 36AB170025B39C16008FB11F /* LaunchScreen.storyboard */; };
+		C2B532EE2F33F92800D619A6 /* BookmarksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B532ED2F33F92800D619A6 /* BookmarksViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		36AB170125B39C16008FB11F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		36AB170325B39C16008FB11F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		36AB170A25B39D5C008FB11F /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; path = web; sourceTree = "<group>"; };
+		C2B532ED2F33F92800D619A6 /* BookmarksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 		36AB16F425B39C15008FB11F /* Tiklal */ = {
 			isa = PBXGroup;
 			children = (
+				C2B532ED2F33F92800D619A6 /* BookmarksViewController.swift */,
 				36AB16F525B39C15008FB11F /* AppDelegate.swift */,
 				36AB16F725B39C15008FB11F /* SceneDelegate.swift */,
 				36AB16F925B39C15008FB11F /* ViewController.swift */,
@@ -141,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2B532EE2F33F92800D619A6 /* BookmarksViewController.swift in Sources */,
 				36AB16FA25B39C15008FB11F /* ViewController.swift in Sources */,
 				36AB16F625B39C15008FB11F /* AppDelegate.swift in Sources */,
 				36AB16F825B39C15008FB11F /* SceneDelegate.swift in Sources */,

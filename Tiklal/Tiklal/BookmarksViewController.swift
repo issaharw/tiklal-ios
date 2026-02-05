@@ -103,19 +103,26 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
         ])
     }
     
+    private var tableViewBottomConstraint: NSLayoutConstraint!
+    
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(BookmarkCell.self, forCellReuseIdentifier: "BookmarkCell")
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .singleLine
+        tableView.backgroundColor = .white
         view.addSubview(tableView)
+        
+        // Set bottom constraint based on whether last position UI is shown
+        let bottomOffset: CGFloat = showLastPositionUI ? -150 : 0
+        tableViewBottomConstraint = tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: bottomOffset)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: 8),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -150)
+            tableViewBottomConstraint
         ])
     }
     
@@ -135,6 +142,9 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     private func setupLastPositionView() {
+        // Don't add the view at all if last position UI is disabled
+        if !showLastPositionUI { return }
+        
         lastPositionView.backgroundColor = secondaryColor
         lastPositionView.translatesAutoresizingMaskIntoConstraints = false
         lastPositionView.isHidden = true
@@ -204,19 +214,17 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
         emptyLabel.isHidden = !bookmarks.isEmpty
         tableView.isHidden = bookmarks.isEmpty
         
-        if showLastPositionUI, let pos = lastPosition {
-            lastPositionView.isHidden = false
-            lastPositionLabel.text = "\(pos.majorTitle)\n\(pos.minorTitle)"
-        } else {
-            lastPositionView.isHidden = true
-        }
-        
-        // Update table view bottom constraint based on last position visibility
-        tableView.constraints.forEach { constraint in
-            if constraint.firstAttribute == .bottom {
-                constraint.constant = lastPositionView.isHidden ? 0 : -150
+        if showLastPositionUI {
+            if let pos = lastPosition {
+                lastPositionView.isHidden = false
+                lastPositionLabel.text = "\(pos.majorTitle)\n\(pos.minorTitle)"
+                tableViewBottomConstraint.constant = -150
+            } else {
+                lastPositionView.isHidden = true
+                tableViewBottomConstraint.constant = 0
             }
         }
+        // When showLastPositionUI is false, the table already extends to bottom
     }
     
     @objc private func backTapped() {
@@ -323,8 +331,12 @@ class BookmarkCell: UITableViewCell {
     }
     
     private func setupViews() {
+        backgroundColor = .white
+        contentView.backgroundColor = .white
+        
         majorLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         majorLabel.textAlignment = .right
+        majorLabel.textColor = .black
         majorLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(majorLabel)
         
