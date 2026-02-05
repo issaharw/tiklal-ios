@@ -202,6 +202,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         bookmarksVC.currentMajorTitle = currentMajorTitle
         bookmarksVC.currentMinorTitle = currentMinorTitle
         bookmarksVC.showLastPositionUI = SHOW_LAST_POSITION_UI
+        bookmarksVC.isDarkMode = UserDefaults.standard.bool(forKey: "darkMode")
         bookmarksVC.onNavigate = { [weak self] major, minor in
             self?.navigateToPosition(major: major, minor: minor)
         }

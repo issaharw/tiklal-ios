@@ -16,6 +16,7 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
     var currentMajorTitle: String = ""
     var currentMinorTitle: String = ""
     var showLastPositionUI: Bool = true
+    var isDarkMode: Bool = false
     
     // Callback for navigation
     var onNavigate: ((Int, Int) -> Void)?
@@ -34,12 +35,23 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
     private let lastPositionLabel = UILabel()
     private let continueButton = UIButton(type: .system)
     
-    private let primaryColor = UIColor(red: 0x42/255, green: 0x6F/255, blue: 0x8C/255, alpha: 1)
-    private let secondaryColor = UIColor(red: 0x5C/255, green: 0x84/255, blue: 0xA2/255, alpha: 1)
+    // Light mode colors
+    private let primaryColorLight = UIColor(red: 0x42/255, green: 0x6F/255, blue: 0x8C/255, alpha: 1)
+    private let secondaryColorLight = UIColor(red: 0x5C/255, green: 0x84/255, blue: 0xA2/255, alpha: 1)
+    
+    // Dark mode colors
+    private let primaryColorDark = UIColor(red: 0x1C/255, green: 0x1C/255, blue: 0x1E/255, alpha: 1)
+    private let secondaryColorDark = UIColor(red: 0x2C/255, green: 0x2C/255, blue: 0x2E/255, alpha: 1)
+    
+    private var primaryColor: UIColor { isDarkMode ? primaryColorDark : primaryColorLight }
+    private var secondaryColor: UIColor { isDarkMode ? secondaryColorDark : secondaryColorLight }
+    private var backgroundColor: UIColor { isDarkMode ? UIColor(red: 0x1C/255, green: 0x1C/255, blue: 0x1E/255, alpha: 1) : .white }
+    private var textColor: UIColor { isDarkMode ? .white : .black }
+    private var secondaryTextColor: UIColor { isDarkMode ? .lightGray : .gray }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = backgroundColor
         
         setupHeader()
         setupAddButton()
@@ -111,7 +123,8 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
         tableView.register(BookmarkCell.self, forCellReuseIdentifier: "BookmarkCell")
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .singleLine
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = backgroundColor
+        tableView.separatorColor = isDarkMode ? .darkGray : .separator
         view.addSubview(tableView)
         
         // Set bottom constraint based on whether last position UI is shown
@@ -128,7 +141,7 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
     
     private func setupEmptyLabel() {
         emptyLabel.text = "אין סימניות שמורות"
-        emptyLabel.textColor = .gray
+        emptyLabel.textColor = secondaryTextColor
         emptyLabel.textAlignment = .center
         emptyLabel.font = UIFont.systemFont(ofSize: 18)
         emptyLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -165,8 +178,8 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
         lastPositionView.addSubview(lastPositionLabel)
         
         continueButton.setTitle("עבור למיקום", for: .normal)
-        continueButton.backgroundColor = .white
-        continueButton.setTitleColor(primaryColor, for: .normal)
+        continueButton.backgroundColor = isDarkMode ? .white : .white
+        continueButton.setTitleColor(isDarkMode ? primaryColorDark : primaryColorLight, for: .normal)
         continueButton.layer.cornerRadius = 8
         continueButton.addTarget(self, action: #selector(continueTapped), for: .touchUpInside)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
@@ -283,7 +296,7 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookmarkCell", for: indexPath) as! BookmarkCell
         let bookmark = bookmarks[indexPath.row]
-        cell.configure(majorTitle: bookmark.majorTitle, minorTitle: bookmark.minorTitle)
+        cell.configure(majorTitle: bookmark.majorTitle, minorTitle: bookmark.minorTitle, isDarkMode: isDarkMode)
         cell.onDelete = { [weak self] in
             self?.deleteBookmark(at: indexPath.row)
         }
@@ -367,9 +380,16 @@ class BookmarkCell: UITableViewCell {
         ])
     }
     
-    func configure(majorTitle: String, minorTitle: String) {
+    func configure(majorTitle: String, minorTitle: String, isDarkMode: Bool = false) {
         majorLabel.text = majorTitle
         minorLabel.text = minorTitle
+        
+        // Apply dark mode colors
+        let bgColor: UIColor = isDarkMode ? UIColor(red: 0x1C/255, green: 0x1C/255, blue: 0x1E/255, alpha: 1) : .white
+        backgroundColor = bgColor
+        contentView.backgroundColor = bgColor
+        majorLabel.textColor = isDarkMode ? .white : .black
+        minorLabel.textColor = isDarkMode ? .lightGray : .gray
     }
     
     @objc private func deleteTapped() {
