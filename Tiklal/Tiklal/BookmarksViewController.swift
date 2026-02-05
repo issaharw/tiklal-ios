@@ -17,6 +17,7 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
     var currentMinorTitle: String = ""
     var showLastPositionUI: Bool = true
     var isDarkMode: Bool = false
+    var isOldColors: Bool = false
     
     // Callback for navigation
     var onNavigate: ((Int, Int) -> Void)?
@@ -43,11 +44,48 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
     private let primaryColorDark = UIColor(red: 0x1C/255, green: 0x1C/255, blue: 0x1E/255, alpha: 1)
     private let secondaryColorDark = UIColor(red: 0x2C/255, green: 0x2C/255, blue: 0x2E/255, alpha: 1)
     
-    private var primaryColor: UIColor { isDarkMode ? primaryColorDark : primaryColorLight }
-    private var secondaryColor: UIColor { isDarkMode ? secondaryColorDark : secondaryColorLight }
-    private var backgroundColor: UIColor { isDarkMode ? UIColor(red: 0x1C/255, green: 0x1C/255, blue: 0x1E/255, alpha: 1) : .white }
-    private var textColor: UIColor { isDarkMode ? .white : .black }
-    private var secondaryTextColor: UIColor { isDarkMode ? .lightGray : .gray }
+    // Old colors
+    private let oldHeader = UIColor(red: 0xF1/255, green: 0xDB/255, blue: 0xA9/255, alpha: 1)
+    private let oldBackground = UIColor(red: 0xFE/255, green: 0xF9/255, blue: 0xE3/255, alpha: 1)
+    private let oldText = UIColor(red: 0x54/255, green: 0x2B/255, blue: 0x22/255, alpha: 1)
+    private let oldButtonBg = UIColor(red: 0x54/255, green: 0x2B/255, blue: 0x22/255, alpha: 1)
+    private let oldButtonText = UIColor(red: 0xFE/255, green: 0xF9/255, blue: 0xE3/255, alpha: 1)
+    
+    private var primaryColor: UIColor {
+        if isDarkMode { return primaryColorDark }
+        if isOldColors { return oldHeader }
+        return primaryColorLight
+    }
+    private var secondaryColor: UIColor {
+        if isDarkMode { return secondaryColorDark }
+        if isOldColors { return oldHeader }
+        return secondaryColorLight
+    }
+    private var backgroundColor: UIColor {
+        if isDarkMode { return UIColor(red: 0x1C/255, green: 0x1C/255, blue: 0x1E/255, alpha: 1) }
+        if isOldColors { return oldBackground }
+        return .white
+    }
+    private var textColor: UIColor {
+        if isDarkMode { return .white }
+        if isOldColors { return oldText }
+        return .black
+    }
+    private var secondaryTextColor: UIColor {
+        if isDarkMode { return .lightGray }
+        if isOldColors { return oldText }
+        return .gray
+    }
+    private var buttonBgColor: UIColor {
+        if isDarkMode { return secondaryColorDark }
+        if isOldColors { return oldButtonBg }
+        return primaryColorLight
+    }
+    private var buttonTextColor: UIColor {
+        if isDarkMode { return .white }
+        if isOldColors { return oldButtonText }
+        return .white
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,15 +106,17 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
         headerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(headerView)
         
+        let headerTextColor: UIColor = isDarkMode ? .white : (isOldColors ? oldText : .white)
+        
         backButton.setTitle("←", for: .normal)
-        backButton.setTitleColor(.white, for: .normal)
+        backButton.setTitleColor(headerTextColor, for: .normal)
         backButton.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
         backButton.translatesAutoresizingMaskIntoConstraints = false
         headerView.addSubview(backButton)
         
         titleLabel.text = "סימניות"
-        titleLabel.textColor = .white
+        titleLabel.textColor = headerTextColor
         titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -100,8 +140,8 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
     
     private func setupAddButton() {
         addButton.setTitle("+ הוסף סימניה למיקום הנוכחי", for: .normal)
-        addButton.backgroundColor = primaryColor
-        addButton.setTitleColor(.white, for: .normal)
+        addButton.backgroundColor = buttonBgColor
+        addButton.setTitleColor(buttonTextColor, for: .normal)
         addButton.layer.cornerRadius = 8
         addButton.addTarget(self, action: #selector(addBookmarkTapped), for: .touchUpInside)
         addButton.translatesAutoresizingMaskIntoConstraints = false
@@ -163,14 +203,16 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
         lastPositionView.isHidden = true
         view.addSubview(lastPositionView)
         
+        let footerTextColor: UIColor = isDarkMode ? .white : (isOldColors ? oldText : .white)
+        
         lastPositionTitleLabel.text = "המשך קריאה מהמיקום האחרון:"
-        lastPositionTitleLabel.textColor = .white
+        lastPositionTitleLabel.textColor = footerTextColor
         lastPositionTitleLabel.font = UIFont.systemFont(ofSize: 14)
         lastPositionTitleLabel.textAlignment = .right
         lastPositionTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         lastPositionView.addSubview(lastPositionTitleLabel)
         
-        lastPositionLabel.textColor = .white
+        lastPositionLabel.textColor = footerTextColor
         lastPositionLabel.font = UIFont.systemFont(ofSize: 16)
         lastPositionLabel.textAlignment = .right
         lastPositionLabel.numberOfLines = 2
@@ -178,8 +220,8 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
         lastPositionView.addSubview(lastPositionLabel)
         
         continueButton.setTitle("עבור למיקום", for: .normal)
-        continueButton.backgroundColor = isDarkMode ? .white : .white
-        continueButton.setTitleColor(isDarkMode ? primaryColorDark : primaryColorLight, for: .normal)
+        continueButton.backgroundColor = buttonBgColor
+        continueButton.setTitleColor(buttonTextColor, for: .normal)
         continueButton.layer.cornerRadius = 8
         continueButton.addTarget(self, action: #selector(continueTapped), for: .touchUpInside)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
@@ -296,7 +338,7 @@ class BookmarksViewController: UIViewController, UITableViewDataSource, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookmarkCell", for: indexPath) as! BookmarkCell
         let bookmark = bookmarks[indexPath.row]
-        cell.configure(majorTitle: bookmark.majorTitle, minorTitle: bookmark.minorTitle, isDarkMode: isDarkMode)
+        cell.configure(majorTitle: bookmark.majorTitle, minorTitle: bookmark.minorTitle, isDarkMode: isDarkMode, isOldColors: isOldColors)
         cell.onDelete = { [weak self] in
             self?.deleteBookmark(at: indexPath.row)
         }
@@ -380,16 +422,33 @@ class BookmarkCell: UITableViewCell {
         ])
     }
     
-    func configure(majorTitle: String, minorTitle: String, isDarkMode: Bool = false) {
+    func configure(majorTitle: String, minorTitle: String, isDarkMode: Bool = false, isOldColors: Bool = false) {
         majorLabel.text = majorTitle
         minorLabel.text = minorTitle
         
-        // Apply dark mode colors
-        let bgColor: UIColor = isDarkMode ? UIColor(red: 0x1C/255, green: 0x1C/255, blue: 0x1E/255, alpha: 1) : .white
+        // Apply color scheme
+        let bgColor: UIColor
+        let textColor: UIColor
+        let secondaryTextColor: UIColor
+        
+        if isDarkMode {
+            bgColor = UIColor(red: 0x1C/255, green: 0x1C/255, blue: 0x1E/255, alpha: 1)
+            textColor = .white
+            secondaryTextColor = .lightGray
+        } else if isOldColors {
+            bgColor = UIColor(red: 0xFE/255, green: 0xF9/255, blue: 0xE3/255, alpha: 1)
+            textColor = UIColor(red: 0x54/255, green: 0x2B/255, blue: 0x22/255, alpha: 1)
+            secondaryTextColor = UIColor(red: 0x54/255, green: 0x2B/255, blue: 0x22/255, alpha: 1)
+        } else {
+            bgColor = .white
+            textColor = .black
+            secondaryTextColor = .gray
+        }
+        
         backgroundColor = bgColor
         contentView.backgroundColor = bgColor
-        majorLabel.textColor = isDarkMode ? .white : .black
-        minorLabel.textColor = isDarkMode ? .lightGray : .gray
+        majorLabel.textColor = textColor
+        minorLabel.textColor = secondaryTextColor
     }
     
     @objc private func deleteTapped() {
