@@ -51,6 +51,8 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Keep the screen on while the app is in use
+        UIApplication.shared.isIdleTimerDisabled = true
         let htmlUrl = buildUrl()
         webView.loadFileURL(htmlUrl, allowingReadAccessTo: htmlUrl.deletingLastPathComponent())
         webView.scrollView.bounces = false
